@@ -43,14 +43,14 @@ export const register = async (req, res) => {
         });
     }
 }
-
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+
         if (!email || !password) {
             return res.status(400).json({
                 message: "All fields are required",
-                success: false
+                success: false,
             });
         }
 
@@ -59,7 +59,7 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 message: "Account with this email is not registered",
-                success: false
+                success: false,
             });
         }
 
@@ -67,23 +67,32 @@ export const login = async (req, res) => {
         if (!isPasswordMatch) {
             return res.status(400).json({
                 message: "Incorrect password",
-                success: false
+                success: false,
             });
         }
 
-        generateToken(res, user, `Welcome back ${user.name}!`);
+        // Generate token
+        const token = generateToken(user);
 
-        return res.status(200).json({
-            message: "Login successful",
-            success: true
+        // Set token as cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: 'strict',
+            maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
         });
 
+        // Send success response
+        return res.status(200).json({
+            message: `Welcome back ${user.name}!`,
+            success: true,
+            user,
+        });
     } catch (error) {
         console.log("Error in login: ", error);
 
         return res.status(500).json({
             message: "Failed to login",
-            success: false
+            success: false,
         });
     }
-}
+};
