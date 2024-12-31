@@ -25,12 +25,7 @@ app.use(cors({
 
 // apis
 app.use("/api/v1/user" ,userRoute)
-// app.get("/home" , (_ , res) => {
-//     res.status(200).json({
-//         success : true,
-//         message : "Hello Im coming from backend"
-//     })
-// })
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

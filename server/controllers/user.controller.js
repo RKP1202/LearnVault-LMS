@@ -1,4 +1,8 @@
 // Isse kya samjha wo idhar likh do
+// 1. User registration
+// 2. User login
+
+
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
