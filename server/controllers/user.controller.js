@@ -8,6 +8,8 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
 
 export const register = async (req, res) => {
+    console.log(req);
+    
     try {
         const { name, email, password } = req.body;
         if (!name || !email || !password) {

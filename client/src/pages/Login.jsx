@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+
 import {
   Card,
   CardContent,
@@ -15,12 +17,39 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { useState } from "react"
+import { useLoginUserMutation, useRegisterUserMutation } from "@/features/api/authApi"
+import { useEffect, useState } from "react"
 import React from "react"
+import { Loader2 } from "lucide-react"
 export default function Login() {
 
   const [signupInput, setSignupInput] = useState({ email: "", password: "", name: "" });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
+
+  //redux  integ
+  const [registerUser, { data: registerData, isLoading: registerIsLoading, error: registerError }] = useRegisterUserMutation();
+  const [loginUser, { data: loginData, isLoading: loginIsloading, error: loginError }] = useLoginUserMutation();
+
+  useEffect(() => {
+    if (registerError) {
+      toast.error("An error occurred while registering. Please try again later.");
+    }
+
+    else if (loginError) {
+      toast.error("An error occurred while logging in. Please try again later.");
+    }
+
+    else if (registerData) {
+      toast.success("Registration successful!");
+    }
+
+    else if (loginData) {
+      toast.success("Login successful!");
+    }
+
+
+  }
+    , [registerError, loginError, loginData, registerData, loginIsloading, registerIsLoading, loginUser, registerUser])
 
   const handleInputChange = (e, type) => {
     const { name, value } = e.target
@@ -33,15 +62,25 @@ export default function Login() {
   }
 
   // data get karne ke liye
-  const handleRegistration = (type) => {
-    if (type === "signup") {
-      console.log(signupInput);
-      
-    }
-    else {
-      console.log(loginInput);
+  const handleRegistration = async (type) => {
+    const inputData = type === "signup" ? signupInput : loginInput;
+    const action = type === "signup" ? registerUser : loginUser;
+
+    try {
+      const result = await action(inputData);
+      if (type === "signup" && result?.data) {
+        // Clear the signup fields only after a successful registration
+        setSignupInput({ email: "", password: "", name: "" });
+      }
+      else if (type === "login" && result?.data) {
+        // Optionally clear login fields after a successful login
+        setLoginInput({ email: "", password: "" });
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
     }
   }
+
 
 
   return (
@@ -97,7 +136,15 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleRegistration("signup")}>SignUp</Button>
+              <Button disabled={registerIsLoading} onClick={() => handleRegistration("signup")}>
+                {
+                  registerIsLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                    </>
+                  ) : "SignUp"
+                }
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -132,7 +179,15 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleRegistration("login")}>Login</Button>
+              <Button disabled={loginIsloading} onClick={() => handleRegistration("login")}>
+                {
+                  loginIsloading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                    </>
+                  ) : "Login"
+                }
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
