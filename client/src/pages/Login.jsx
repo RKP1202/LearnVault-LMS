@@ -84,7 +84,7 @@ export default function Login() {
 
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center mt-20 py-4">
       <Tabs defaultValue="account" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login">Login</TabsTrigger>

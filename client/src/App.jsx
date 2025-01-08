@@ -1,14 +1,15 @@
 import React from 'react'
 import { Button } from './components/ui/button'
 import Login from './pages/Login'
+import Navbar from './components/Navbar'
+import Hero from './pages/student/HeroSection'
 const App = () => {
   return (
     <main>
-      <Button>
-        Lets build LeanVault
-      </Button>
+      <Navbar />
+      <Hero/>
       <Login />
-    </main>
+    </main> 
   )
 }
 
