@@ -21,6 +21,7 @@ import { useLoginUserMutation, useRegisterUserMutation } from "@/features/api/au
 import { useEffect, useState } from "react"
 import React from "react"
 import { Loader2 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 export default function Login() {
 
   const [signupInput, setSignupInput] = useState({ email: "", password: "", name: "" });
@@ -29,6 +30,8 @@ export default function Login() {
   //redux  integ
   const [registerUser, { data: registerData, isLoading: registerIsLoading, error: registerError }] = useRegisterUserMutation();
   const [loginUser, { data: loginData, isLoading: loginIsloading, error: loginError }] = useLoginUserMutation();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (registerError) {
@@ -45,6 +48,7 @@ export default function Login() {
 
     else if (loginData) {
       toast.success("Login successful!");
+      navigate("/");
     }
 
 
